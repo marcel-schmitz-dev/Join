@@ -1,6 +1,6 @@
 export const environment = {
 
-  supabaseUrl: 'https://ncodxdtojolitvbulszl.supabase.co',
+  supabaseUrl: 'https://jgjcotgqejgcemjilpdy.supabase.co/rest/v1/',
 
-  supabasePublishableKey: 'sb_publishable_7N8Jbn4Yh6oZHWaA5L6LGg_1LuDZxou',
+  supabasePublishableKey: 'sb_publishable_G48asmM03MdDeqo4zTtwYQ_79vXGoL9',
 };
