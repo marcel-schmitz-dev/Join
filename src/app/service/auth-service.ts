@@ -56,4 +56,15 @@ export class AuthService {
   async logout(): Promise<void> {
     await this.db.auth.signOut();
   }
+
+
+  /**
+   * Speichert den neuen Namen im Konto. Der Header zeigt danach die neuen Initialen.
+   * Gäste haben keinen Namen. Ein Fehler hier soll das Speichern des Kontakts nicht abbrechen.
+   * @param name der neue Name des eingeloggten Nutzers
+   */
+  async updateName(name: string): Promise<void> {
+    if (this.isGuest()) return;
+    await this.db.auth.updateUser({ data: { name } });
+  }
 }

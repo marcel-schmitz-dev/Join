@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ContactInterface } from '../../../interface/contact-interface';
+import { getInitials } from '../../../shared/contact-utils';
 
 @Component({
   selector: 'app-contact-detail',
@@ -11,6 +12,7 @@ export class ContactDetailComponent {
   @Input() contact: ContactInterface | null = null;
   @Output() editClicked = new EventEmitter<void>();
   @Output() deleteClicked = new EventEmitter<void>();
+  readonly initialsOf = getInitials;
 
 
   /** Meldet der Kontaktliste, dass der Kontakt bearbeitet werden soll. */

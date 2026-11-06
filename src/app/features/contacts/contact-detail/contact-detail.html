@@ -1,8 +1,8 @@
 @if (contact) {
   <div class="contact-detail-container">
     <div class="contact-header">
-      <div class="contact-avatar" [style.background-color]="contact.color">
-        {{ contact.initials }}
+            <div class="contact-avatar" [style.background-color]="contact.color">
+        {{ initialsOf(contact.name) }}
       </div>
       <div class="contact-header-info">
         <div class="contact-name">

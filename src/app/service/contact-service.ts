@@ -1,6 +1,7 @@
 import { inject, Service, signal } from '@angular/core';
 import { ContactData, ContactInterface, ContactRow } from '../interface/contact-interface';
 import { Supabase } from './supabase';
+import { AuthService } from './auth-service';
 import { getInitials, randomColor } from '../shared/contact-utils';
 
 const TABLE = 'contacts';
@@ -8,6 +9,7 @@ const TABLE = 'contacts';
 @Service()
 export class ContactService {
   private readonly db = inject(Supabase).client;
+  private readonly auth = inject(AuthService);
   private readonly contactList = signal<ContactInterface[]>([]);
 
   readonly contacts = this.contactList.asReadonly();
@@ -49,7 +51,7 @@ export class ContactService {
 
 
   /**
-   * UPDATE: Ändert einen vorhandenen Kontakt.
+   * UPDATE: Ändert einen vorhandenen Kontakt. Ist es der eigene, wird auch der Name im Konto aktualisiert.
    * @param id ID des Kontakts
    * @param changes die geänderten Felder
    * @returns den geänderten Kontakt
@@ -60,6 +62,7 @@ export class ContactService {
     if (!data) throw new Error(`Kontakt ${id} wurde nicht gefunden.`);
     const updated = toContact(data);
     this.contactList.update((list) => sortContacts(list.map((c) => (c.id === id ? updated : c))));
+    await this.syncOwnName(updated);
     this.showUpdatedMessage.set(true);
     setTimeout(() => this.showUpdatedMessage.set(false), 3000);
     return updated;
@@ -131,6 +134,16 @@ export class ContactService {
   private async loadCurrentUser(): Promise<void> {
     const { data } = await this.db.auth.getSession();
     this.currentUserId.set(data.session?.user.id ?? null);
+  }
+
+
+  /**
+   * Gibt den geänderten Namen an das Konto weiter, wenn es der eigene Kontakt ist.
+   * Dann zeigt der Header sofort die neuen Initialen.
+   * @param contact der gespeicherte Kontakt
+   */
+  private async syncOwnName(contact: ContactInterface): Promise<void> {
+    if (this.isOwnContact(contact.id)) await this.auth.updateName(contact.name);
   }
 }
 
