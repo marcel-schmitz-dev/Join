@@ -6,7 +6,7 @@
   box-sizing: border-box;
 
   @media(max-width: 768px) {
-    padding: 24px 20px;
+    padding: 24px 20px 100px 20px;
   }
 }
 
@@ -33,7 +33,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #29abe2;
+    color: var(--light-blue, #29abe2);
     padding: 8px;
     border-radius: 50%;
     display: flex;
@@ -50,7 +50,6 @@
 .legal-section {
   margin-bottom: 32px;
 
-
   h2 {
     font-size: clamp(20px, 4vw, 27px);
     font-weight: 700;
@@ -63,9 +62,37 @@
     line-height: 1.6;
     margin-bottom: 16px;
   }
+
+  ul {
+    margin: 0 0 16px;
+    padding-left: 24px;
+
+    li {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+  }
+
+  address {
+    font-style: normal;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  a {
+    color: var(--light-blue, #29abe2);
+    text-decoration: none;
+    word-break: break-word;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .highlight {
-  color: #29abe2;
+  color: var(--light-blue, #29abe2);
   font-weight: 500;
 }
