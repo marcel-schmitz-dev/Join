@@ -102,12 +102,12 @@
   &.mobile-only { display: none; }
 }
 
+@media (min-width: 769px) {
+  .header-logo { display: none; }
+}
+
 @media (max-width: 768px) {
   .top-header {
-    background-image: url(../../../../public/assets/Join-logo.png);
-    background-size: 32px 39px;
-    background-repeat: no-repeat;
-    background-position: 16px;
     height: 80px;
     padding: 20px 16px;
     justify-content: flex-end;
@@ -116,6 +116,15 @@
   }
 
   .header-title { display: none; }
+  .header-logo {
+    display: block;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    width: 32px;
+    height: 39px;
+    transform: translateY(-50%);
+  }
   .user-menu { right: 16px; }
   .user-menu-item.mobile-only { display: block; }
 }

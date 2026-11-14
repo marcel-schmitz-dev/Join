@@ -1,7 +1,10 @@
 type Theme = 'light' | 'dark';
 
-const LOGO_SELECTOR = 'img[src*="join-logo"]';
+const LOGO_SELECTOR = 'img[src*="join-logo" i]';
 const HOTSPOT = { left: 14, top: 22, width: 24, height: 22 };
+const MIN_TOUCH_SIZE = 28;
+
+type Box = { left: number; top: number; right: number; bottom: number };
 const DEBUG = false;
 const STORAGE_KEY = 'join-theme';
 const root = document.documentElement;
@@ -52,6 +55,27 @@ function toggleTheme(): void {
 
 
 /**
+ * Berechnet die Klickfläche (Hotspot) um das blaue Viereck in Pixeln.
+ * Bei kleinen Logos (z. B. mobil im Header) wird sie auf Touch-Größe vergrößert,
+ * bleibt aber innerhalb des Logos.
+ * @param r die Maße des Logos
+ * @returns die Klickfläche in Pixeln
+ */
+function hotspotBox(r: DOMRect): Box {
+  const w = Math.max((r.width * HOTSPOT.width) / 100, MIN_TOUCH_SIZE);
+  const h = Math.max((r.height * HOTSPOT.height) / 100, MIN_TOUCH_SIZE);
+  const cx = r.left + (r.width * (HOTSPOT.left + HOTSPOT.width / 2)) / 100;
+  const cy = r.top + (r.height * (HOTSPOT.top + HOTSPOT.height / 2)) / 100;
+  return {
+    left: Math.max(r.left, cx - w / 2),
+    top: Math.max(r.top, cy - h / 2),
+    right: Math.min(r.right, cx + w / 2),
+    bottom: Math.min(r.bottom, cy + h / 2),
+  };
+}
+
+
+/**
  * Prüft, ob ein Klick auf dem blauen Viereck im Logo liegt.
  * @param e das Klick-Event
  * @param logo das Logo-Element, auf das geklickt wurde
@@ -60,14 +84,8 @@ function toggleTheme(): void {
 function isInHotspot(e: MouseEvent, logo: Element): boolean {
   const r = logo.getBoundingClientRect();
   if (!r.width || !r.height) return false;
-  const x = ((e.clientX - r.left) / r.width) * 100;
-  const y = ((e.clientY - r.top) / r.height) * 100;
-  return (
-    x >= HOTSPOT.left &&
-    x <= HOTSPOT.left + HOTSPOT.width &&
-    y >= HOTSPOT.top &&
-    y <= HOTSPOT.top + HOTSPOT.height
-  );
+  const b = hotspotBox(r);
+  return e.clientX >= b.left && e.clientX <= b.right && e.clientY >= b.top && e.clientY <= b.bottom;
 }
 
 
@@ -90,15 +108,16 @@ function onLogoClick(e: MouseEvent): void {
  * @returns die Style-Werte für den Rahmen
  */
 function debugBoxStyle(r: DOMRect): Partial<CSSStyleDeclaration> {
+  const b = hotspotBox(r);
   return {
     position: 'fixed',
     pointerEvents: 'none',
     border: '1px solid red',
     zIndex: '99999',
-    left: `${r.left + (r.width * HOTSPOT.left) / 100}px`,
-    top: `${r.top + (r.height * HOTSPOT.top) / 100}px`,
-    width: `${(r.width * HOTSPOT.width) / 100}px`,
-    height: `${(r.height * HOTSPOT.height) / 100}px`,
+    left: `${b.left}px`,
+    top: `${b.top}px`,
+    width: `${b.right - b.left}px`,
+    height: `${b.bottom - b.top}px`,
   };
 }
 
