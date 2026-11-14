@@ -1,34 +1,126 @@
-:root {
-  --bg: #f6f7f8;
-  --surface: #ffffff;
-  --card-bg: #ffffff;
-  --text: #2a3647;
-  --text-muted: #a8a8a8;
-  --border: #d1d1d1;
-  --hover: #f0f0f0;
-  --input-border: #959595;
-  --drag-drop-card:#ffffff;
-  --summary: #000;
+// =============================================================================
+// Dark Mode – "Neon": dunkler Grund mit Neon-Cyan und Magenta.
+// Alles liegt in diesem Ordner. Zum Entfernen: @use in styles.scss und
+// initDarkMode() in main.ts löschen.
+// =============================================================================
+
+$cyan: #00f0ff;
+$magenta: #ff2bd6;
+$ink: #05060d;
+$field-bg: #080a15;
+$logo-dark-mode: url('../../../public/assets/images/Join-logo-dark-mode.png');
+
+/// Haupt-Button: Neon-Cyan gefüllt, beim Hover Magenta.
+@mixin neon-primary($base: $cyan, $hover: $magenta) {
+  background: $base !important;
+  border-color: $base !important;
+  color: $ink !important;
+  box-shadow: 0 0 12px rgba($base, 0.45) !important;
+
+  img,
+  svg {
+    filter: brightness(0) !important;
+  }
+
+  &:hover:not(:disabled) {
+    background: $hover !important;
+    border-color: $hover !important;
+    color: $ink !important;
+    box-shadow: 0 0 18px rgba($hover, 0.6) !important;
+  }
+
+  &:active:not(:disabled) {
+    filter: brightness(0.9);
+  }
+
+  &:disabled {
+    background: #1b1f3f !important;
+    border-color: #2a3060 !important;
+    color: #5d6591 !important;
+    box-shadow: none !important;
+  }
 }
 
+/// Zweit-Button: Umriss in Neon-Cyan, beim Hover Magenta.
+@mixin neon-secondary {
+  background: transparent !important;
+  border-color: $cyan !important;
+  color: $cyan !important;
+
+  img {
+    filter: brightness(0) invert(1) !important;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: $magenta !important;
+    color: $magenta !important;
+    box-shadow: 0 0 14px rgba($magenta, 0.45) !important;
+  }
+}
+
+/// Leuchtender Rahmen für Karten, Dialoge und Menüs.
+@mixin neon-frame($color: $cyan, $alpha: 0.28) {
+  border: 1px solid rgba($color, $alpha) !important;
+  box-shadow:
+    0 0 22px rgba($color, 0.1),
+    0 8px 30px rgba(0, 0, 0, 0.55) !important;
+}
+
+// -----------------------------------------------------------------------------
+// Farbvariablen
+// -----------------------------------------------------------------------------
 :root[data-theme='dark'] {
-  --bg: #1b1f27;
-  --surface: #252b36;
-  --card-bg: #7A93AC;
-  --text: #e8eaed;
-  --text-muted: #9aa3b2;
-  --border: #3a4252;
-  --hover: #2f3644;
-  --input-border: #5a6478;
-  --drag-drop-card:#2f3644;
-  --summary: #ffffff;
-
   color-scheme: dark;
+  scrollbar-color: rgba($cyan, 0.45) transparent;
 
+  --bg: #07080f;
+  --surface: #0d1020;
+  --card-bg: #11142a;
+  --text: #e6f6ff;
+  --text-muted: #8c95b8;
+  --border: #262b4d;
+  --hover: #1a1e3a;
+  --input-border: #353c6b;
+  --drag-drop-card: #11142a;
+  --summary: #e6f6ff;
+
+  --dark-blue: #0a0c1a;
+  --active-menu: #1b1236;
+  --menu-hover: #161a33;
+  --header-initial-hover: rgba(0, 240, 255, 0.14);
+  --dark-btn-text: #05060d;
+  --menu-text: #cfe9ff;
+  --color-black: #e6f6ff;
+  --light-blue: #00f0ff;
+  --light-blue-2: #00c8d8;
+  --user-story: #5b4bff;
+  --technical-task: #00b8a3;
+  --progress-bar: #00f0ff;
+  --progress-bg: #1d2245;
+  --empty-bg: #141831;
+  --searchbar-bg: #080a15;
+  --search-hover: #ff2bd6;
+  --search-focus: #00f0ff;
+  --column-title: #9fb2ff;
+  --dark-grey: #8c95b8;
+  --dark-grey2: #c5cbe6;
+  --color-muted: #7f89b3;
+  --placeholder: #596092;
+  --valid-error: #ff4d7a;
+
+  ::selection {
+    background: rgba($magenta, 0.45);
+    color: #ffffff;
+  }
+
+  &,
   & body,
-  & main {
+  & main,
+  .main-wrapper,
+  .full-screen-layout,
+  app-signup {
     background-color: var(--bg) !important;
-    color: var(--text) !important;
+    color: var(--text);
   }
 
   .help-scroll-area,
@@ -39,15 +131,323 @@
     background-color: var(--bg) !important;
   }
 
+  // ---------------------------------------------------------------------------
+  // Logo: dunkles Logo wird im Dark Mode durch die weiße Variante ersetzt
+  // (das blaue Viereck bleibt, der Klick-Hotspot bleibt gleich)
+  // ---------------------------------------------------------------------------
+  img[src$='Join-logo.png' i] {
+    object-fit: none;
+    object-position: 9999px 9999px;
+    background: $logo-dark-mode center / contain no-repeat;
+  }
+
+  img[src*='join-logo' i] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Header und Seitenleiste
+  // ---------------------------------------------------------------------------
   .top-header {
+    box-shadow:
+      0 1px 0 rgba($cyan, 0.28),
+      0 6px 24px rgba($cyan, 0.07) !important;
+
     .help-icon {
       border-color: var(--text-muted) !important;
       color: var(--text) !important;
+
+      &:hover {
+        border-color: $cyan !important;
+        color: $cyan !important;
+      }
     }
 
     .user-avatar-sm {
-      border-color: var(--text) !important;
+      background-color: transparent !important;
+      border-color: $cyan !important;
+      color: $cyan !important;
+      box-shadow: 0 0 10px rgba($cyan, 0.35);
+
+      &:hover {
+        background-color: var(--header-initial-hover) !important;
+      }
+    }
+  }
+
+  .user-menu {
+    @include neon-frame;
+    background-color: #0a0c1a !important;
+  }
+
+  .user-menu-item:hover {
+    color: $cyan;
+  }
+
+  .sidebar {
+    background: linear-gradient(180deg, #090b18, #0d0a22) !important;
+    border-right: 1px solid rgba($cyan, 0.25);
+    box-shadow: 0 0 26px rgba($cyan, 0.08);
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba($magenta, 0.26), rgba($cyan, 0.04)) !important;
+      box-shadow: inset 3px 0 0 $magenta;
+    }
+
+    .nav-item:hover:not(.active) {
+      color: $cyan;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      border-right: none;
+      border-top: 1px solid rgba($cyan, 0.3);
+
+      .nav-item.active {
+        background: rgba($magenta, 0.22) !important;
+        box-shadow: inset 0 3px 0 $magenta;
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Buttons
+  // ---------------------------------------------------------------------------
+  .btn-primary,
+  .signup-btn,
+  .btn--primary,
+  .ok-submit-btn,
+  .add-task-btn,
+  .add-contact-btn,
+  .mobile-fab-btn,
+  .create,
+  .save {
+    @include neon-primary;
+  }
+
+  .btn-confirm {
+    @include neon-primary($magenta, $cyan);
+  }
+
+  .btn-secondary,
+  .btn--secondary,
+  .btn-cancel,
+  .cancel {
+    @include neon-secondary;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Trennlinien und Akzente
+  // ---------------------------------------------------------------------------
+  .underline,
+  .summary__divider,
+  .signup-header hr {
+    background-color: $cyan !important;
+    background: $cyan !important;
+    box-shadow: 0 0 10px rgba($cyan, 0.7);
+  }
+
+  .back-btn img,
+  .signup-back img,
+  img[src*='pfeil-icon'] {
+    filter: brightness(0) invert(1) drop-shadow(0 0 4px $cyan);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Login und Sign up
+  // ---------------------------------------------------------------------------
+  .intro-overlay {
+    background-color: var(--bg) !important;
+  }
+
+  .login-card,
+  .signup-form {
+    background: var(--surface) !important;
+    @include neon-frame;
+  }
+
+  .login-card h1,
+  .header-right-mobile span {
+    color: var(--text) !important;
+  }
+
+  .input-group input {
+    background-color: $field-bg !important;
+    border-color: var(--input-border) !important;
+    color: var(--text) !important;
+
+    &::placeholder {
+      color: var(--placeholder) !important;
+    }
+  }
+
+  .privacy__box::before {
+    border-color: $cyan !important;
+  }
+
+  .privacy__box svg {
+    stroke: $cyan !important;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Eingabefelder, Dropdowns, Datepicker
+  // ---------------------------------------------------------------------------
+  .field__input,
+  .field-input,
+  .edit-input,
+  app-category-select .field,
+  .priority-btn:not(.selected),
+  .contact__right--input input {
+    background-color: $field-bg !important;
+    border-color: var(--input-border) !important;
+    color: var(--text) !important;
+  }
+
+  .contact__right--input input::placeholder,
+  .field__input::placeholder {
+    color: var(--placeholder) !important;
+  }
+
+  .field__input:focus,
+  .field-input:focus,
+  .edit-input:focus,
+  app-category-select .field:focus-visible,
+  app-category-select .open .field,
+  .input-group input:focus,
+  .contact__right--input input:focus {
+    border-color: $cyan !important;
+    box-shadow:
+      0 0 0 1px rgba($cyan, 0.35),
+      0 0 12px rgba($cyan, 0.25) !important;
+  }
+
+  .priority-btn.selected {
+    color: #ffffff !important;
+  }
+
+  .option-list,
+  .contact-list,
+  .move-menu,
+  .mobile-menu-popup,
+  .calendar-dialog {
+    @include neon-frame;
+    background: var(--surface) !important;
+  }
+
+  .option.selected,
+  .contact-list .contact-item.selected {
+    background-color: rgba($cyan, 0.16) !important;
+    color: $cyan !important;
+  }
+
+  .calendar-day--selected,
+  .calendar-day--selected:hover:not(:disabled) {
+    background: $cyan !important;
+    color: $ink !important;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Dialoge und Overlays
+  // ---------------------------------------------------------------------------
+  .modal-container,
+  .panel,
+  .modal-content,
+  .delete-confirm-modal {
+    background-color: var(--surface) !important;
+    @include neon-frame;
+  }
+
+  .delete-confirm-modal {
+    h3 {
       color: var(--text) !important;
+    }
+
+    p {
+      color: var(--text-muted) !important;
+    }
+  }
+
+  .toast {
+    background: #12163a !important;
+    color: #ffffff !important;
+    border: 1px solid $cyan;
+    box-shadow: 0 0 16px rgba($cyan, 0.4) !important;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Summary
+  // ---------------------------------------------------------------------------
+  .card,
+  .urgent {
+    background: var(--surface) !important;
+    box-shadow:
+      0 0 0 1px rgba($cyan, 0.24),
+      0 0 16px rgba($cyan, 0.08) !important;
+
+    &:hover {
+      background: #170b2e !important;
+      box-shadow:
+        0 0 0 1px $magenta,
+        0 0 22px rgba($magenta, 0.4) !important;
+    }
+  }
+
+  .card__count,
+  .prio__count,
+  .urgent__date,
+  .card__label,
+  .prio__label,
+  .urgent__hint,
+  .card-title,
+  .move-btn,
+  .move-menu-title,
+  .move-menu-item {
+    color: var(--text) !important;
+  }
+
+  .card__icon {
+    filter: drop-shadow(0 0 6px rgba($cyan, 0.55));
+  }
+
+  .urgent__divider {
+    background: rgba($cyan, 0.4) !important;
+  }
+
+  .greeting__name {
+    color: $cyan !important;
+    text-shadow: 0 0 14px rgba($cyan, 0.55);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Add Task
+  // ---------------------------------------------------------------------------
+  .add-task__title,
+  .task-form__hint {
+    color: var(--text) !important;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Kontakte
+  // ---------------------------------------------------------------------------
+  .contacts-list-container .contact-item.selected {
+    background-color: rgba($magenta, 0.18) !important;
+    box-shadow: inset 3px 0 0 $magenta;
+  }
+
+  .contact-email,
+  .email-link {
+    color: $cyan !important;
+  }
+
+  .contact-actions .action-btn:hover {
+    color: $cyan !important;
+    -webkit-text-stroke-color: $cyan !important;
+
+    svg path {
+      fill: $cyan !important;
     }
   }
 
@@ -55,13 +455,17 @@
     filter: brightness(0) invert(1);
   }
 
+  .contact__form {
+    background: linear-gradient(160deg, #090b18, #170b2e) !important;
+    border-right: 1px solid rgba($cyan, 0.25);
+  }
+
+  .close-btn-left:hover {
+    background-color: rgba($cyan, 0.18) !important;
+  }
+
   .mobile-back-btn svg,
   .mobile-back-btn svg path {
     stroke: var(--text) !important;
   }
-}
-
-img[src*='join-logo'] {
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
 }
