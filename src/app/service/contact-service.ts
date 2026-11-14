@@ -37,7 +37,8 @@ export class ContactService {
 
 
   /**
-   * CREATE: Speichert einen neuen Kontakt. Er hat keine `user_id` und gilt daher als Dummy-Kontakt.
+   * CREATE: Speichert einen neuen Kontakt. Er hat keine `user_id`; die Datenbank trägt den
+   * angemeldeten User als `created_by` ein. Nur dieser User darf ihn ändern und löschen.
    * @param contact Daten aus dem Formular
    * @returns den gespeicherten Kontakt inklusive ID
    */
@@ -70,8 +71,8 @@ export class ContactService {
 
 
   /**
-   * DELETE: Löscht einen Kontakt. Die Datenbank erlaubt das nur für den eigenen
-   * Kontakt und für Dummy-Kontakte (siehe Delete-Policy).
+   * DELETE: Löscht einen Kontakt. Die Datenbank erlaubt das nur, wenn der User den Kontakt
+   * verwalten darf (siehe Delete-Policy).
    * Blockiert die Policy das Löschen, wirft Supabase keinen Fehler, sondern betrifft 0 Zeilen.
    * Deshalb werden die gelöschten Zeilen zurückgefragt und geprüft.
    * @param id ID des Kontakts
@@ -95,13 +96,30 @@ export class ContactService {
 
 
   /**
-   * Darf der eingeloggte User diesen Kontakt löschen? Erlaubt sind der eigene Kontakt
-   * und Dummy-Kontakte ohne Account, nicht aber andere registrierte User.
+   * Darf der eingeloggte User diesen Kontakt ändern oder löschen? Die Regeln entsprechen den
+   * Policies in Supabase (supabase/contacts-access.sql):
+   * - Profil-Kontakt eines registrierten Users: nur der Besitzer selbst
+   * - selbst angelegter Kontakt: nur der Ersteller
+   * - Dummy-Kontakt (ohne Besitzer und Ersteller): nur Gäste
+   * @param contact der Kontakt
+   * @returns `true`, wenn Ändern und Löschen erlaubt sind
+   */
+  canManage(contact: ContactInterface): boolean {
+    const userId = this.currentUserId();
+    if (!userId) return false;
+    if (contact.userId) return contact.userId === userId;
+    if (contact.createdBy) return contact.createdBy === userId;
+    return this.auth.isGuest();
+  }
+
+
+  /**
+   * Darf der eingeloggte User diesen Kontakt löschen? Gleiche Regel wie beim Ändern.
    * @param contact der Kontakt
    * @returns `true`, wenn das Löschen erlaubt ist
    */
   canDelete(contact: ContactInterface): boolean {
-    return !contact.userId || contact.userId === this.currentUserId();
+    return this.canManage(contact);
   }
 
 
@@ -161,6 +179,7 @@ function toContact(row: ContactRow): ContactInterface {
     color: row.color,
     initials: getInitials(row.name),
     userId: row.user_id,
+    createdBy: row.created_by,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

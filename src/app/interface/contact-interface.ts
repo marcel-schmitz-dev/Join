@@ -13,6 +13,8 @@ export interface ContactInterface {
 
   userId: string | null;
 
+  createdBy: string | null;
+
   createdAt: string;
   updatedAt: string;
 }
@@ -30,6 +32,7 @@ export interface ContactRow {
   email: string;
   phone: string | null;
   user_id: string | null;
+  created_by: string | null;
   color: string;
   created_at: string;
   updated_at: string;

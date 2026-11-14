@@ -10,6 +10,8 @@ import { getInitials } from '../../../shared/contact-utils';
 })
 export class ContactDetailComponent {
   @Input() contact: ContactInterface | null = null;
+  /** Zeigt Edit und Delete nur, wenn der User den Kontakt verwalten darf. */
+  @Input() canManage = false;
   @Output() editClicked = new EventEmitter<void>();
   @Output() deleteClicked = new EventEmitter<void>();
   readonly initialsOf = getInitials;

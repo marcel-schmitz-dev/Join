@@ -72,12 +72,14 @@
     @for (item of [contact]; track item.id) {
       <app-contact-detail
         [contact]="item"
+        [canManage]="canManageSelected()"
         (editClicked)="showEditContactModal.set(true)"
         (deleteClicked)="onDeleteContact()"
       >
       </app-contact-detail>
     }
 
+    @if (canManageSelected()) {
     <div class="mobile-fab-wrapper">
       <button class="mobile-fab-btn" (click)="toggleMobileMenu()">
         <svg
@@ -141,6 +143,7 @@
         </div>
       }
     </div>
+    }
   }
 </div>
 

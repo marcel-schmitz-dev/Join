@@ -9,6 +9,7 @@
           <h2>{{ contact.name }}</h2>
         </div>
         <div class="contact-actions">
+          @if (canManage) {
           <button class="action-btn edit-btn" (click)="onEdit()">
             <svg
               width="24"
@@ -53,6 +54,7 @@
 
             <span>Delete</span>
           </button>
+          }
         </div>
       </div>
     </div>

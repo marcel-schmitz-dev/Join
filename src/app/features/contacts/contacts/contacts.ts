@@ -49,10 +49,10 @@ export class ContactsComponent implements OnInit {
     return this.contacts().find((c) => c.id === id) || null;
   });
 
-  /** Ist der gewählte Kontakt löschbar (eigener Kontakt oder Dummy-Kontakt)? */
-  canDeleteSelected = computed(() => {
+  /** Darf der gewählte Kontakt geändert und gelöscht werden? */
+  canManageSelected = computed(() => {
     const contact = this.selectedContact();
-    return !!contact && this.contactService.canDelete(contact);
+    return !!contact && this.contactService.canManage(contact);
   });
 
   /** Texte für den Lösch-Dialog. Beim eigenen Kontakt warnt er, dass der ganze Account gelöscht wird. */
@@ -146,7 +146,7 @@ export class ContactsComponent implements OnInit {
    */
   onDeleteContact(): void {
     this.showMobileMenu.set(false);
-    if (!this.canDeleteSelected()) {
+    if (!this.canManageSelected()) {
       this.showMessage(this.contactService.showCannotDeleteMessage);
       return;
     }
