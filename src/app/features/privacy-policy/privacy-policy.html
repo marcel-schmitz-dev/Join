@@ -9,53 +9,250 @@
     </div>
 
     <section class="privacy-section">
-      <h2>Introduction</h2>
+      <h2>1. Introduction</h2>
       <p>
-        Welcome to <span class="highlight">Join</span>. We take the protection of your personal data
-        very seriously. This privacy policy informs you about how we handle personal data when you
-        use our kanban project management tool developed as part of a student bootcamp project at
-        the Developer Akademie.
+        Welcome to <span class="highlight">Join</span>. The protection of your personal data is
+        important to me. This privacy policy explains which personal data is processed when you
+        use this website and application, for what purposes, and which rights you have under the
+        General Data Protection Regulation (GDPR).
+      </p>
+      <p>
+        <span class="highlight">Join</span> is a non-commercial kanban project management tool. It
+        was developed as a student group project during a training programme at the Developer
+        Akademie GmbH and is published here as part of my personal portfolio.
       </p>
     </section>
 
     <section class="privacy-section">
-      <h2>Data Collection and Usage</h2>
+      <h2>2. Controller</h2>
+      <p>The controller within the meaning of Art. 4 (7) GDPR is:</p>
+      <address>
+        Marcel Schmitz<br />
+        Von-Agris-Straße 39<br />
+        41844 Wegberg<br />
+        Germany<br />
+        Phone: <a href="tel:+4915204105582">+49 152 04105582</a><br />
+        Email: <a href="mailto:m.schmitz.dev@gmail.com">m.schmitz.dev&#64;gmail.com</a>
+      </address>
+    </section>
+
+    <section class="privacy-section">
+      <h2>3. Hosting and server log files</h2>
       <p>
-        As an educational project, we limit data collection to the absolute minimum required to
-        provide core functionality (such as managing tasks, creating contacts, and organizing
-        boards). The data you enter (e.g., task descriptions, contact names, and email addresses) is
-        stored securely via our database and authentication provider (Supabase) or locally in your
-        browser exclusively for the purpose of demonstrating and testing the application.
+        This website is hosted by <strong>IONOS SE</strong>, Elgendorfer Str. 57, 56410 Montabaur,
+        Germany. When you visit the site, the web server automatically processes technical data
+        that your browser transmits: your IP address, date and time of the request, the requested
+        page or file, the amount of data transferred, the HTTP status code, and browser and
+        operating system information (user agent).
+      </p>
+      <p>
+        This processing is necessary to deliver the website, to ensure its stability and security,
+        and to detect and defend against abuse. The legal basis is Art. 6 (1) (f) GDPR (legitimate
+        interest in a secure and functional website). The log data is stored only for as long as
+        required for these purposes. It is not merged with other data sources.
+      </p>
+      <p>
+        IONOS processes this data on my behalf. A data processing agreement pursuant to Art. 28
+        GDPR has been concluded with IONOS.
       </p>
     </section>
 
     <section class="privacy-section">
-      <h2>Use of Supabase (Authentication and Database)</h2>
+      <h2>4. Registration, login and guest access</h2>
       <p>
-        For user authentication and data management, we use <span class="highlight">Supabase</span>
-        as a backend-as-a-service provider. When you sign up or log in, your credentials (such as
-        your email address and encrypted password) and application data are processed and stored
-        securely on Supabase servers. Supabase acts as a processor for handling backend
-        infrastructure to ensure core functionalities like secure logins and data syncing.
+        For authentication and data storage, <span class="highlight">Join</span> uses the backend
+        service <strong>Supabase</strong> (see section 6). You can use the application in two ways:
+      </p>
+      <ul>
+        <li>
+          <strong>Registration:</strong> When you sign up, the name, email address and password you
+          enter are processed. The password is stored only in encrypted (hashed) form. In addition,
+          Supabase records technical metadata of your account and sessions, such as creation time,
+          last login and IP address. The legal basis is Art. 6 (1) (b) GDPR (providing the
+          requested user account and the functions of the application).
+        </li>
+        <li>
+          <strong>Guest login:</strong> A guest session does not require a name or email address.
+          Supabase creates an anonymous account with a randomly generated ID so that the
+          application can be tested. The legal basis is Art. 6 (1) (b) and (f) GDPR.
+        </li>
+      </ul>
+    </section>
+
+    <section class="privacy-section">
+      <h2>5. Contacts, tasks and other content you enter</h2>
+      <p>
+        The application stores the content you create, in particular contacts (name, email
+        address, phone number, avatar colour) and tasks (title, description, due date, priority,
+        category, subtasks, assigned contacts, status). This data is stored in the Supabase
+        database in order to display and synchronise it within the application. The legal basis
+        is Art. 6 (1) (b) GDPR.
+      </p>
+      <p>
+        <strong>Visibility of contacts:</strong> Access to contacts is restricted in the database:
+      </p>
+      <ul>
+        <li>
+          When you register, a contact with your name and email address is created automatically.
+          This contact is visible to other <em>registered</em> users of the application. Guests
+          cannot see it.
+        </li>
+        <li>
+          Registered users can see this profile contact, the sample contacts and the contacts they
+          created themselves. They can only edit or delete their own profile contact and the
+          contacts they created themselves.
+        </li>
+        <li>
+          Guests can only see, edit and delete the shared sample contacts (dummy data) and the
+          contacts they created themselves during their guest session.
+        </li>
+      </ul>
+      <p>
+        <strong>Please note the following:</strong>
+      </p>
+      <ul>
+        <li>
+          Tasks and their content are shared between all logged-in users of the application,
+          including guests. Do not enter confidential information in tasks.
+        </li>
+        <li>
+          The application is a demonstration and portfolio project. Please use fictitious data for
+          contacts and tasks, and do not enter personal data of third parties or any sensitive
+          information (such as health data) in the application.
+        </li>
+      </ul>
+    </section>
+
+    <section class="privacy-section">
+      <h2>6. Supabase (authentication and database)</h2>
+      <p>
+        The backend of <span class="highlight">Join</span> is provided by Supabase Inc. (970 Toa
+        Payoh North #07-04, Singapore 318992). Supabase processes the data described in sections 4
+        and 5 on my behalf as a processor within the meaning of Art. 28 GDPR. A data processing
+        agreement (DPA) pursuant to Art. 28 GDPR has been concluded with Supabase. Supabase
+        operates its infrastructure with the help of sub-processors, such as cloud infrastructure
+        providers.
+      </p>
+      <p>
+        The project data is stored in the EU region <em>eu-west-1</em> (Ireland). Because
+        Supabase Inc. is based outside the European Economic Area, access from a third country
+        cannot be ruled out entirely; such transfers are safeguarded by appropriate guarantees
+        pursuant to Art. 46 GDPR, in particular the EU Standard Contractual Clauses contained in
+        the DPA. Your browser communicates directly with the Supabase servers when you log in or
+        when data is loaded or saved; in this process your IP address is transmitted to Supabase.
       </p>
     </section>
 
     <section class="privacy-section">
-      <h2>Cookies and Local Storage</h2>
+      <h2>7. Local storage in your browser (no tracking cookies)</h2>
       <p>
-        Our application may use local storage mechanisms (such as browser local storage or session
-        tokens) to maintain your login session and preferences. This data remains on your device and
-        is not shared with third-party tracking services.
+        <span class="highlight">Join</span> does not use tracking or advertising cookies and does
+        not use analytics or marketing tools. The application uses the storage of your browser
+        (local storage and session storage) only for functions that are technically necessary or
+        that you have requested:
+      </p>
+      <ul>
+        <li>
+          the login session token of Supabase, so that you stay logged in while using the
+          application (local storage),
+        </li>
+        <li>
+          your chosen display theme, so that it is remembered on your next visit (local storage),
+        </li>
+        <li>
+          a flag that the login animation has already been shown during the current visit
+          (session storage).
+        </li>
+      </ul>
+      <p>
+        Access to this information is permitted without consent under § 25 (2) No. 2 TDDDG, as it
+        is strictly necessary to provide the service you have requested or to store your own
+        settings. Any subsequent processing is based on Art. 6 (1) (f) GDPR. You can delete this
+        data at any time in your browser settings; you will then be logged out.
       </p>
     </section>
 
     <section class="privacy-section">
-      <h2>Your Rights</h2>
+      <h2>8. Fonts and external resources</h2>
       <p>
-        Since <span class="highlight">Join</span> is an educational student project, you have the
-        right to request information about any test data stored by you, or to ask for its deletion
-        at any time by contacting the development team members.
+        The fonts used in the application are hosted locally on the same server. No fonts or
+        scripts are loaded from external servers, so your IP address is not transmitted to font
+        providers or content delivery networks when you visit the site.
       </p>
+    </section>
+
+    <section class="privacy-section">
+      <h2>9. Storage period and deletion</h2>
+      <p>
+        Personal data is stored only for as long as it is needed for the purposes described above.
+        You can delete your account at any time in the application: open your own profile in
+        Contacts and choose <em>Delete</em>. This removes your account and your contact entry. Data
+        created in guest mode is not linked to a name or email address and may be deleted
+        periodically without notice. Server log files are deleted after a short period in
+        accordance with the settings of the hosting provider.
+      </p>
+      <p>
+        If you would like me to delete your data or you cannot delete it yourself, please contact
+        me using the details in section 2.
+      </p>
+    </section>
+
+    <section class="privacy-section">
+      <h2>10. Your rights</h2>
+      <p>You have the following rights regarding your personal data:</p>
+      <ul>
+        <li>Right of access (Art. 15 GDPR)</li>
+        <li>Right to rectification (Art. 16 GDPR)</li>
+        <li>Right to erasure (Art. 17 GDPR)</li>
+        <li>Right to restriction of processing (Art. 18 GDPR)</li>
+        <li>Right to data portability (Art. 20 GDPR)</li>
+        <li>
+          Right to object to processing based on Art. 6 (1) (f) GDPR on grounds relating to your
+          particular situation (Art. 21 GDPR)
+        </li>
+        <li>
+          Right to withdraw a given consent at any time with effect for the future (Art. 7 (3)
+          GDPR)
+        </li>
+      </ul>
+      <p>
+        To exercise your rights, simply send me a message using the contact details in section 2.
+      </p>
+      <p>
+        You also have the right to lodge a complaint with a data protection supervisory authority
+        (Art. 77 GDPR). The authority responsible for me is the State Commissioner for Data
+        Protection and Freedom of Information of North Rhine-Westphalia (LDI NRW),
+        Kavalleriestraße 2–4, 40213 Düsseldorf, Germany,
+        <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener noreferrer">www.ldi.nrw.de</a>.
+      </p>
+    </section>
+
+    <section class="privacy-section">
+      <h2>11. Obligation to provide data, automated decisions</h2>
+      <p>
+        Using <span class="highlight">Join</span> with an account requires a name, an email address
+        and a password; without them, registration is not possible. The guest login works without
+        personal details. There is no automated decision-making or profiling within the meaning of
+        Art. 22 GDPR.
+      </p>
+    </section>
+
+    <section class="privacy-section">
+      <h2>12. Data security</h2>
+      <p>
+        The website and the connection to the database use SSL/TLS encryption (HTTPS), so that
+        data transmitted between your browser and the servers cannot be read by third parties. Passwords are stored only in hashed form. No
+        system is completely secure, so I recommend not using a password that you use elsewhere.
+      </p>
+    </section>
+
+    <section class="privacy-section">
+      <h2>13. Changes to this privacy policy</h2>
+      <p>
+        I will update this privacy policy when the application or the legal situation changes. The
+        current version is always available on this page.
+      </p>
+      <p>Last updated: November 2026</p>
     </section>
   </div>
 </div>
