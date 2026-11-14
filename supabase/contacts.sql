@@ -41,6 +41,9 @@ create table public.contacts (
   -- Wird der Account gelöscht, verschwindet sein Kontakt mit.
   user_id    uuid references auth.users (id) on delete cascade,
 
+  -- Account, der den Kontakt angelegt hat. Dummy-Kontakte haben hier NULL.
+  created_by uuid default auth.uid() references auth.users (id) on delete cascade,
+
   -- Jede E-Mail-Adresse gibt es nur einmal
   constraint unique_email unique (email)
 );
@@ -48,6 +51,7 @@ create table public.contacts (
 comment on table public.contacts is 'Kontakte der Join-App';
 
 create index contacts_user_id_idx on public.contacts (user_id);
+create index contacts_created_by_idx on public.contacts (created_by);
 
 -- -----------------------------------------------------------------------------
 -- 2) updated_at bei jeder Änderung automatisch auf "jetzt" setzen
@@ -60,47 +64,98 @@ create trigger contacts_set_updated_at
   execute function extensions.moddatetime(updated_at);
 
 -- -----------------------------------------------------------------------------
--- 3) Freigabe für die API
---    In Supabase ist eine neue Tabelle erst über die API
---    erreichbar, wenn die Rollen ausdrücklich Rechte bekommen.
---    anon          = Anfragen ohne Login (Sprint1)
---    authenticated = eingeloggte Nutzer  (Sprint1)
---    service_role  = serverseitige Zugriffe mit dem Secret Key (Sprint1)
+-- 3) Rechte, Row Level Security (RLS) und Zugriffsregeln
+--    In Supabase ist eine neue Tabelle erst über die API erreichbar, wenn die
+--    Rollen ausdrücklich Rechte bekommen. Ohne Policy darf niemand etwas.
 -- -----------------------------------------------------------------------------
-grant select, insert, update, delete on public.contacts to anon, authenticated;
+
+-- -----------------------------------------------------------------------------
+-- Zugriffsregeln für Kontakte
+--
+--   Gast (anonymer Login)
+--     sieht, ändert und löscht nur Dummy-Kontakte (ohne user_id und ohne
+--     created_by) und die Kontakte, die er selbst angelegt hat.
+--   Registrierter Nutzer
+--     sieht Dummy-Kontakte, alle registrierten Nutzer und die selbst angelegten
+--     Kontakte. Ändern und Löschen darf er nur den eigenen Kontakt (Profil)
+--     und die selbst angelegten Kontakte.
+--   Ohne Login (anon): kein Zugriff.
+--
+--   user_id    = Konto, zu dem der Kontakt gehört (nur beim Profil-Kontakt)
+--   created_by = Konto, das den Kontakt angelegt hat (Standard: auth.uid())
+-- -----------------------------------------------------------------------------
+
+-- Ist der aktuelle Nutzer ein Gast?
+create or replace function public.is_guest()
+returns boolean
+language sql
+stable
+as $$
+  select coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false)
+$$;
+
+grant execute on function public.is_guest() to authenticated;
+
+-- Rechte: Ohne Login nichts. Eingeloggte dürfen nur die vier Formularfelder
+-- schreiben, user_id und created_by lassen sich nicht von außen setzen.
+revoke all on public.contacts from anon;
+revoke insert, update on public.contacts from authenticated;
+grant select, delete on public.contacts to authenticated;
+grant insert (name, email, phone, color) on public.contacts to authenticated;
+grant update (name, email, phone, color) on public.contacts to authenticated;
 grant select, insert, update, delete on public.contacts to service_role;
 
--- -----------------------------------------------------------------------------
--- 4) Row Level Security (RLS)
---    RLS bleibt eingeschaltet. Ohne Policy darf niemand etwas, deshalb gibt es
---    für jede der vier Aktionen eine eigene Regel.
--- -----------------------------------------------------------------------------
 alter table public.contacts enable row level security;
 
-create policy "Logged-in users can read contacts"
+drop policy if exists "Logged-in users can read contacts" on public.contacts;
+drop policy if exists "Logged-in users can add contacts" on public.contacts;
+drop policy if exists "Logged-in users can update contacts" on public.contacts;
+drop policy if exists "Delete own or dummy contacts" on public.contacts;
+drop policy if exists "Read allowed contacts" on public.contacts;
+drop policy if exists "Add own contacts" on public.contacts;
+drop policy if exists "Update allowed contacts" on public.contacts;
+drop policy if exists "Delete allowed contacts" on public.contacts;
+
+create policy "Read allowed contacts"
   on public.contacts for select
   to authenticated
-  using (true);
+  using (
+    user_id = (select auth.uid())
+    or created_by = (select auth.uid())
+    or (user_id is null and created_by is null)
+    or (user_id is not null and not public.is_guest())
+  );
 
-create policy "Logged-in users can add contacts"
+create policy "Add own contacts"
   on public.contacts for insert
   to authenticated
-  with check (true);
+  with check (created_by = (select auth.uid()) and user_id is null);
 
-create policy "Logged-in users can update contacts"
+create policy "Update allowed contacts"
   on public.contacts for update
   to authenticated
-  using (true)
-  with check (true);
+  using (
+    user_id = (select auth.uid())
+    or created_by = (select auth.uid())
+    or (user_id is null and created_by is null and public.is_guest())
+  )
+  with check (
+    user_id = (select auth.uid())
+    or created_by = (select auth.uid())
+    or (user_id is null and created_by is null and public.is_guest())
+  );
 
--- Löschen nur beim eigenen Kontakt und bei Dummy-Kontakten (ohne user_id)
-create policy "Delete own or dummy contacts"
+create policy "Delete allowed contacts"
   on public.contacts for delete
   to authenticated
-  using (user_id is null or user_id = (select auth.uid()));
+  using (
+    user_id = (select auth.uid())
+    or created_by = (select auth.uid())
+    or (user_id is null and created_by is null and public.is_guest())
+  );
 
 -- -----------------------------------------------------------------------------
--- 5) Eigener Kontakt bei der Registrierung
+-- 4) Eigener Kontakt bei der Registrierung
 --    Legt für jeden neuen Account einen Kontakt mit dem Namen aus dem
 --    Sign up an. Gäste bekommen keinen.
 -- -----------------------------------------------------------------------------
@@ -132,7 +187,7 @@ create or replace trigger on_auth_user_created
   execute function public.handle_new_user();
 
 -- -----------------------------------------------------------------------------
--- 6) Eigenen Account löschen
+-- 5) Eigenen Account löschen
 --    Die App ruft das auf, wenn jemand seinen eigenen Kontakt löscht.
 --    Der Kontakt verschwindet über user_id mit.
 -- -----------------------------------------------------------------------------
@@ -149,7 +204,7 @@ revoke execute on function public.delete_own_account() from public, anon;
 grant execute on function public.delete_own_account() to authenticated;
 
 -- -----------------------------------------------------------------------------
--- 7) Beispielkontakte (Für leeren Start löschen)
+-- 6) Beispielkontakte (Für leeren Start löschen)
 -- -----------------------------------------------------------------------------
 insert into public.contacts (name, email, phone, color) values
   ('Anton Mayer',      'anton.mayer@example.com',      '+49 1111 111111', '#FF7A00'),
